@@ -24,7 +24,6 @@ with tabs[0]:
     with col1:
         scatter_plot_for_year(data, selected_year)
     with col2:
-        st.subheader("Commentaires sur les Graphiques")
         st.write("Ajoutez ici des commentaires sur les graphiques affichés dans la première colonne.")
 
 with tabs[1]:
