@@ -1,30 +1,90 @@
+import streamlit as st
+from utils import scatter_plot_for_year, plot_top_10_ranks_evolution, plot_map, plot_top_countries_map
 import pandas as pd
-import pygal
+import geopandas as gpd
 
-# Charger les données à partir du fichier CSV
-data = pd.read_csv('publications_scientifiques_par_pays.csv')
+data = pd.read_csv('data/publications_scientifiques_par_pays.csv')
+data.loc[data['Country'] == 'United States', 'Country'] = 'United States of America'
+world = gpd.read_file('data/ne_110m_admin_0_countries/ne_110m_admin_0_countries.shp')
 
-# Calculer les moyennes pour chaque variable
-means_by_country = data.groupby('Country').mean()
+st.set_page_config(layout="wide")
 
-# Calculer le rang médian pour chaque pays
-median_rank_by_country = data.groupby('Country')['H.index'].median().sort_values()
+st.sidebar.title('Filtres')
+selected_year_slider_key = "selected_year_slider"
+selected_year = st.sidebar.slider('Sélectionner une année', min_value=data['Year'].min(), max_value=data['Year'].max(),
+                                  value=data['Year'].min(), key=selected_year_slider_key)
 
-# Créer un graphique à bulles avec Pygal
-dot_chart = pygal.XY(stroke=False)
+tabs = st.tabs(["Nuage de Points", "Évolution des Rangs", "Carte H-index", "Carte Top 10", "Revitalisation"])
 
-# Parcourir chaque pays pour ajouter les points au graphique
-for country in means_by_country.index:
-    dot_chart.add(country,
-                  [{'value': (means_by_country.loc[country, 'Documents'], means_by_country.loc[country, 'Citations']),
-                    'label': country,
-                    'color': '#{:06x}'.format(int(median_rank_by_country[country] / len(median_rank_by_country) * 255**3)),
-                    'xlink': {'href': f'#', 'target': '_top'},
-                    'size': means_by_country.loc[country, 'H.index'] / 2}])
+with tabs[0]:
+    st.markdown(
+        "<h2 style='font-weight:bold;margin-bottom:20px;font-size:35px'>Nuage de Points: Documents vs Citations pour " + str(
+            selected_year) + "</h2>", unsafe_allow_html=True)
+    col1, col2 = st.columns([3, 1], gap="large")
+    with col1:
+        scatter_plot_for_year(data, selected_year)
+    with col2:
+        st.subheader("Commentaires sur les Graphiques")
+        st.write("Ajoutez ici des commentaires sur les graphiques affichés dans la première colonne.")
 
-# Ajouter les lignes de référence pour les moyennes de chaque variable
-dot_chart.add('Moyenne des Documents', [(means_by_country['Documents'].mean(), means_by_country['Citations'].mean())])
-dot_chart.add('Moyenne des Citations', [(means_by_country['Documents'].mean(), means_by_country['Citations'].mean())])
+with tabs[1]:
+    st.markdown("<h2 style='font-weight:bold;margin-bottom:20px;font-size:35px'>Évolution des Rangs des Pays</h2>",
+                unsafe_allow_html=True)
+    col1, col2 = st.columns([3, 1], gap="large")
+    with col1:
+        top_10_ranks = data[data['Rank'] <= 10]
+        plot_top_10_ranks_evolution(top_10_ranks)
+    with col2:
+        st.write("Ajoutez ici des commentaires sur les graphiques affichés dans la première colonne.")
 
-# Afficher le graphique
-dot_chart.render_to_file('nuage_points_pygal.svg')
+with tabs[2]:
+    h_index_slider_key = "h_index_threshold_slider"
+    h_index_threshold = st.sidebar.slider('Sélectionner un seuil pour l\'indice H', min_value=0,
+                                          max_value=data['H.index'].max(), value=0, key=h_index_slider_key)
+    st.markdown(
+        "<h2 style='font-weight:bold;margin-bottom:20px;font-size:35px'>Carte des pays avec un H-index supérieur à " + str(
+            h_index_threshold) + " pour l'année " + str(selected_year) + "</h2>", unsafe_allow_html=True)
+    col1, col2 = st.columns([3, 1], gap="large")
+    with col1:
+        plot_map(selected_year, h_index_threshold, data, world)
+    with col2:
+        st.write("Ajoutez ici des commentaires sur les graphiques affichés dans la première colonne.")
+
+with tabs[3]:
+    st.markdown(
+        "<h2 style='font-weight:bold;margin-bottom:20px;font-size:35px'>Carte des pays du top 10 pour l\'année " + str(
+            selected_year) + " selon le nombre de documents produits</h2>", unsafe_allow_html=True)
+    col1, col2 = st.columns([3, 1], gap="large")
+    with col1:
+        plot_top_countries_map(data, world, 10, selected_year)
+    with col2:
+        st.write("Ajoutez ici des commentaires sur les graphiques affichés dans la première colonne.")
+
+with tabs[4]:
+    st.markdown(
+        "<h2 style='font-weight:bold;margin-bottom:20px;font-size:35px'>Stratégies de Revitalisation des 5 Pires Pays</h2>",
+        unsafe_allow_html=True)
+
+    strategies = [
+        "Investissement dans la recherche et développement (R&D) : Encourager les gouvernements à investir davantage dans la recherche scientifique et technologique. Cela pourrait inclure l'allocation de fonds spécifiques, la création de subventions pour les chercheurs et les institutions de recherche, et le financement de projets de recherche innovants.",
+        "Amélioration de l'infrastructure de recherche : Développer et moderniser les infrastructures de recherche, telles que les laboratoires, les centres de recherche et les universités. Cela pourrait impliquer la construction de nouvelles installations de recherche, l'acquisition d'équipements de pointe et la mise en place de collaborations internationales.",
+        "Éducation et formation : Renforcer les programmes d'éducation scientifique et technologique à tous les niveaux, de l'enseignement primaire à l'enseignement supérieur. Encourager la formation continue des chercheurs et des professionnels de la science pour maintenir leurs compétences à jour et favoriser l'innovation.",
+        "Promotion de la collaboration internationale : Encourager la collaboration et les échanges scientifiques internationaux en facilitant les partenariats entre les chercheurs, les institutions de recherche et les organisations internationales. Cela pourrait favoriser le partage des connaissances, des ressources et des meilleures pratiques.",
+        "Création d'incitations : Mettre en place des incitations pour encourager la recherche et l'innovation, telles que des prix, des subventions de recherche, des crédits d'impôt pour la recherche et le développement, et des politiques de propriété intellectuelle favorables à l'innovation.",
+        "Promotion de l'entrepreneuriat scientifique : Encourager la création d'entreprises innovantes dans le domaine des sciences et de la technologie en fournissant un soutien financier, une assistance technique et des infrastructures adaptées.",
+        "Transfert de technologie : Faciliter le transfert de technologie et de connaissances scientifiques des institutions de recherche vers le secteur industriel afin de stimuler l'innovation et la croissance économique."
+    ]
+
+    col1, col2 = st.columns(2)
+    with col1:
+        for strategy in strategies[:4]:
+            strategy_title, strategy_content = strategy.split(":", 1)
+            st.markdown("<p style='font-size:20px; font-weight:bold;'>" + strategy_title.strip() + "</p>",
+                        unsafe_allow_html=True)
+            st.write(strategy_content.strip())
+    with col2:
+        for strategy in strategies[4:]:
+            strategy_title, strategy_content = strategy.split(":", 1)
+            st.markdown("<p style='font-size:20px; font-weight:bold;'>" + strategy_title.strip() + "</p>",
+                        unsafe_allow_html=True)
+            st.write(strategy_content.strip())
