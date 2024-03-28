@@ -17,10 +17,10 @@ def scatter_plot_for_year(data, year):
 
     # Nuage de points pour l'année sélectionnée
     scatter_plot = alt.Chart(grouped_data_for_year).mark_circle().encode(
-        x='avg_documents',
-        y='avg_citations',
-        color=alt.Color('median_rank', scale=alt.Scale(scheme='category20b')),
-        size='avg_h_index',
+        x=alt.X('avg_documents', title='Moyenne des documents'),
+        y=alt.Y('avg_citations', title='Moyenne des citations'),
+        color=alt.Color('median_rank', scale=alt.Scale(scheme='category20b'), title='Classement médian'),
+        size=alt.Size('avg_h_index', title='H-index moyen'),
         tooltip=['Country', 'avg_documents', 'avg_citations', 'median_rank', 'avg_h_index']
     ).properties(
         width=700,
