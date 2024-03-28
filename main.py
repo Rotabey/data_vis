@@ -25,10 +25,12 @@ with tabs[0]:
         scatter_plot_for_year(data, selected_year)
     with col2:
         st.subheader('Le leader :')
-        st.write("On peut constater à travers ce graphique que les Etats Unis sont de 1996 à 2014 le pays qui arrive a produire le plus de documents qui sont par la suite utilisé pour la recheche.")
+        st.write("On peut constater à travers ce graphique que les États-Unis sont, de 1996 à 2014, le pays qui arrive à produire le plus de documents qui sont "
+                 "par la suite utilisés pour la recherche.")
         st.write("")
         st.subheader('L\'ascension de la Chine :')
-        st.write("On remarque également que la Chine, à partir de 2005 augmente considérablement sa production")
+        st.write("On remarque également que la Chine, à partir de 2005, augmente considérablement sa production de documents "
+                 "et cela jusqu'en 2014. Ces documents produits ne sont pas autant cités que ceux des États-Unis mais dépassent les citations de documents des pays européens en 2011.")
 
 with tabs[1]:
     st.markdown("<h2 style='font-weight:bold;margin-bottom:20px;font-size:35px'>Évolution des Rangs des Pays</h2>",
