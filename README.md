@@ -18,7 +18,7 @@ Ce projet Streamlit est conçu pour analyser et visualiser les données sur les 
 - Altair
 - Matplotlib
 
-## Installation et Exécution
+## Installation et exécution
 
 1. **Installer les dépendances :**
     ```bash
