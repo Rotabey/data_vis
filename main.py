@@ -24,7 +24,7 @@ with tabs[0]:
     with col1:
         scatter_plot_for_year(data, selected_year)
     with col2:
-        st.write("Ajoutez ici des commentaires sur les graphiques affichés dans la première colonne.")
+        st.write("On peut constaterAjoutez ici des commentaires sur les graphiques affichés dans la première colonne.")
 
 with tabs[1]:
     st.markdown("<h2 style='font-weight:bold;margin-bottom:20px;font-size:35px'>Évolution des Rangs des Pays</h2>",
