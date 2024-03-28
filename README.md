@@ -22,10 +22,10 @@ Ce projet Streamlit est conçu pour analyser et visualiser les données sur les 
 
 1. **Installer les dépendances :**
     ```bash
-    pip install streamlit pandas geopandas altair matplotlib
+    pip install poetry && poetry install --no-root
     ```
 
 2. **Exécuter l'application Streamlit :**
     ```bash
-    streamlit run main.py
+    poetry run streamlit run main.py
     ```
