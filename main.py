@@ -14,7 +14,7 @@ selected_year_slider_key = "selected_year_slider"
 selected_year = st.sidebar.slider('Sélectionner une année', min_value=data['Year'].min(), max_value=data['Year'].max(),
                                   value=data['Year'].min(), key=selected_year_slider_key)
 
-tabs = st.tabs(["Nuage de Points", "Évolution des Rangs", "Carte H-index", "Carte Top 10", "Conclusion"])
+tabs = st.tabs(["Nuage de Points", "Évolution des Rangs", "Carte Top 10", "Carte H-index", "Conclusion"])
 
 with tabs[0]:
     st.markdown(
@@ -24,7 +24,11 @@ with tabs[0]:
     with col1:
         scatter_plot_for_year(data, selected_year)
     with col2:
-        st.write("On peut constaterAjoutez ici des commentaires sur les graphiques affichés dans la première colonne.")
+        st.subheader('Le leader :')
+        st.write("On peut constater à travers ce graphique que les Etats Unis sont de 1996 à 2014 le pays qui arrive a produire le plus de documents qui sont par la suite utilisé pour la recheche.")
+        st.write("")
+        st.subheader('L\'ascension de la Chine :')
+        st.write("On remarque également que la Chine, à partir de 2005 augmente considérablement sa production")
 
 with tabs[1]:
     st.markdown("<h2 style='font-weight:bold;margin-bottom:20px;font-size:35px'>Évolution des Rangs des Pays</h2>",
@@ -37,6 +41,16 @@ with tabs[1]:
         st.write("Ajoutez ici des commentaires sur les graphiques affichés dans la première colonne.")
 
 with tabs[2]:
+    st.markdown(
+        "<h2 style='font-weight:bold;margin-bottom:20px;font-size:35px'>Carte des pays du top 10 pour l\'année " + str(
+            selected_year) + " selon le nombre de documents produits</h2>", unsafe_allow_html=True)
+    col1, col2 = st.columns([3, 1], gap="large")
+    with col1:
+        plot_top_countries_map(data, world, 10, selected_year)
+    with col2:
+        st.write("Ajoutez ici des commentaires sur les graphiques affichés dans la première colonne.")
+
+with tabs[3]:
     h_index_slider_key = "h_index_threshold_slider"
     h_index_threshold = st.sidebar.slider('Sélectionner un seuil pour l\'indice H', min_value=0,
                                           max_value=data['H.index'].max(), value=0, key=h_index_slider_key)
@@ -46,16 +60,6 @@ with tabs[2]:
     col1, col2 = st.columns([3, 1], gap="large")
     with col1:
         plot_map(selected_year, h_index_threshold, data, world)
-    with col2:
-        st.write("Ajoutez ici des commentaires sur les graphiques affichés dans la première colonne.")
-
-with tabs[3]:
-    st.markdown(
-        "<h2 style='font-weight:bold;margin-bottom:20px;font-size:35px'>Carte des pays du top 10 pour l\'année " + str(
-            selected_year) + " selon le nombre de documents produits</h2>", unsafe_allow_html=True)
-    col1, col2 = st.columns([3, 1], gap="large")
-    with col1:
-        plot_top_countries_map(data, world, 10, selected_year)
     with col2:
         st.write("Ajoutez ici des commentaires sur les graphiques affichés dans la première colonne.")
 
