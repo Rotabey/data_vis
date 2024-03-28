@@ -38,7 +38,8 @@ with tabs[1]:
         top_10_ranks = data[data['Rank'] <= 10]
         plot_top_10_ranks_evolution(top_10_ranks)
     with col2:
-        st.write("Ajoutez ici des commentaires sur les graphiques affichés dans la première colonne.")
+        st.write("Comme nous pouvons le constarter, la Chine entre 1996 et 2014 à fait une augmentation remarquable en ce qui s'agit du rank de production scientifique.")
+        
 
 with tabs[2]:
     st.markdown(
