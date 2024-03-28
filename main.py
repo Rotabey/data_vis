@@ -14,7 +14,7 @@ selected_year_slider_key = "selected_year_slider"
 selected_year = st.sidebar.slider('Sélectionner une année', min_value=data['Year'].min(), max_value=data['Year'].max(),
                                   value=data['Year'].min(), key=selected_year_slider_key)
 
-tabs = st.tabs(["Nuage de Points", "Évolution des Rangs", "Carte H-index", "Carte Top 10", "Revitalisation"])
+tabs = st.tabs(["Nuage de Points", "Évolution des Rangs", "Carte H-index", "Carte Top 10", "Conclusion"])
 
 with tabs[0]:
     st.markdown(
