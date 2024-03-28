@@ -1,4 +1,4 @@
-# Analyse des Publications Scientifiques par Pays
+# Analyse des publications scientifiques par pays
 
 Ce projet Streamlit est conçu pour analyser et visualiser les données sur les publications scientifiques par pays. Il fournit des graphiques interactifs et des cartes pour explorer divers aspects de la production scientifique mondiale, notamment les documents publiés, les citations, les classements des pays, les indices H et bien plus encore.
 
