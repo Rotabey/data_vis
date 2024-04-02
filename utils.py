@@ -93,7 +93,8 @@ def plot_percentage_ring(selected_year, min_h_index, max_h_index, data):
     total_countries = len(data[data['Year'] == selected_year]['Country'].unique())
 
     # Calculer le pourcentage de pays dans la fourchette par rapport au nombre total de pays
-    percentage_in_range = (num_countries_in_range / total_countries) * 100
+    percentage_in_range = round((num_countries_in_range / total_countries) * 100, 0)
+    percentage_in_range = percentage_in_range if percentage_in_range < 101 else 100
 
     # Couleurs plus foncées pour les deux sections de l'anneau
     colors = ['#2ca02c', '#d62728']
@@ -102,8 +103,7 @@ def plot_percentage_ring(selected_year, min_h_index, max_h_index, data):
     sizes = [percentage_in_range, 100 - percentage_in_range]
 
     fig, ax = plt.subplots(facecolor='#0E1117')  # Couleur de fond personnalisée
-    wedges, texts, autotexts = ax.pie(sizes, colors=colors, startangle=90, wedgeprops=dict(width=0.3),
-                                      autopct='%1.1f%%')
+    wedges, texts, autotexts = ax.pie(sizes, colors=colors, startangle=90, wedgeprops=dict(width=0.3), autopct='%1.1f%%')
     ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
 
     # Modifier la taille et la couleur du texte pour les pourcentages

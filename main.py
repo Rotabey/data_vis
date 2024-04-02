@@ -5,21 +5,49 @@ import pandas as pd
 import geopandas as gpd
 
 data = pd.read_csv('data/publications_scientifiques_par_pays.csv')
-data.loc[data['Country'] == 'United States', 'Country'] = 'United States of America'
-data.loc[data['Country'] == 'Russian Federation', 'Country'] = 'Russia'
+
+country_name_mapping = {
+    "United States": "United States of America",
+    "Russian Federation": "Russia",
+    "Hong Kong": "Hong Kong S.A.R.",
+    "Czech Republic": "Czechia",
+    "South Korea": "Korea, South",
+    "Taiwan": "Taiwan*",
+    "Egypt": "Egypt, Arab Rep.",
+    "Iran": "Iran, Islamic Rep.",
+    "Netherlands Antilles": "Netherlands",
+    "Palestine ": "West Bank and Gaza",
+    "Syrian Arab Republic": "Syria",
+    "Côte d'Ivoire": "Cote d'Ivoire",
+    "Congo": "Congo, Dem. Rep.",
+    "Democratic Republic Congo": "Congo, Rep.",
+    "Viet Nam": "Vietnam",
+    "Moldova": "Moldova, Rep.",
+    "North Korea": "Korea, North",
+    "Falkland Islands (Malvinas)": "Falkland Islands",
+    "French Southern Territories": "French Southern and Antarctic Lands",
+    "Saint Helena": "Saint Helena, Ascension and Tristan da Cunha"
+}
+
+data['Country'] = data['Country'].map(country_name_mapping).fillna(data['Country'])
 world = gpd.read_file('data/ne_110m_admin_0_countries/ne_110m_admin_0_countries.shp')
 
 st.set_page_config(layout="wide")
 st.title('Publications scientifiques par pays')
 st.write('')
-tabs = st.tabs(["Nuage de Points", "Évolution des Rangs", "Carte Top 10", "Carte H-index"])
+tabs = st.tabs(["Tableau de données", "Nuage de Points", "Évolution des Rangs", "Carte Top 10", "Carte H-index"])
 
-# Afficher le nuage de points avec les filtres appliqués
 with tabs[0]:
+    st.markdown(
+        "<h2 style='font-weight:bold;margin-bottom:20px;font-size:35px'>Trie des données</h2>",
+        unsafe_allow_html=True)
+    st.write(data)
+# Afficher le nuage de points avec les filtres appliqués
+with tabs[1]:
     st.markdown(
         "<h2 style='font-weight:bold;margin-bottom:20px;font-size:35px'>Nuage de Points: Documents vs Citations</h2>",
         unsafe_allow_html=True)
-    col1, col2, col3 = st.columns([1, 3, 1], gap="large")
+    col1, col2 = st.columns([1, 3], gap="large")
     with col1:
         st.subheader('Filtres')
         selected_year_slider_key = "selected_year_slider"
@@ -38,29 +66,15 @@ with tabs[0]:
     with col2:
         scatter_plot_for_year(data, selected_year, min_docs_filter, max_docs_filter, min_citations_filter,
                               max_citations_filter)
-    with col3:
-        st.subheader('Le leader :')
-        st.write(
-            "On peut constater à travers ce graphique que les États-Unis sont, de 1996 à 2014, le pays qui arrive à produire le plus de documents qui sont "
-            "par la suite utilisés pour la recherche.")
-        st.write("")
-        st.subheader('L\'ascension de la Chine :')
-        st.write(
-            "On remarque également que la Chine, à partir de 2005, augmente considérablement sa production de documents "
-            "et cela jusqu'en 2014. Ces documents produits ne sont pas autant cités que ceux des États-Unis mais dépassent les citations de documents des pays européens en 2011.")
-
-with tabs[1]:
-    st.markdown("<h2 style='font-weight:bold;margin-bottom:20px;font-size:35px'>Évolution des Rangs des Pays</h2>",
-                unsafe_allow_html=True)
-    col1, col2 = st.columns([3, 1], gap="large")
-    with col1:
-        top_10_ranks = data[data['Rank'] <= 10]
-        plot_top_10_ranks_evolution(top_10_ranks)
-    with col2:
-        st.write(
-            "Comme nous pouvons le constarter, la Chine entre 1996 et 2014 à fait une augmentation remarquable en ce qui s'agit du rank de production scientifique.")
 
 with tabs[2]:
+    st.markdown("<h2 style='font-weight:bold;margin-bottom:20px;font-size:35px'>Évolution des Rangs des Pays</h2>",
+                unsafe_allow_html=True)
+    top_10_ranks = data[data['Rank'] <= 10]
+    plot_top_10_ranks_evolution(top_10_ranks)
+
+
+with tabs[3]:
     st.markdown(
         "<h2 style='font-weight:bold;margin-bottom:20px;font-size:35px'>Carte des pays du top 10 selon le nombre de documents produits</h2>",
         unsafe_allow_html=True)
@@ -87,7 +101,7 @@ with tabs[2]:
         # Afficher le tableau HTML dans Streamlit
         st.markdown(html_table, unsafe_allow_html=True)
 
-with tabs[3]:
+with tabs[4]:
     st.markdown(
         "<h2 style='font-weight:bold;margin-bottom:20px;font-size:35px'>Carte des pays selon le H-index</h2>",
         unsafe_allow_html=True)
